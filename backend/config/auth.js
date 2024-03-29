@@ -6,9 +6,9 @@ dotenv.config({
 });
 const isAuthenticated = async (req, res, next) => {
   try {
-    const {token} = res.cookies;
+    const {token} = req.cookies;
 
-    console.log(token);
+    // console.log(token);
 
     if (!token) {
       return res.status(401).json({
@@ -18,8 +18,8 @@ const isAuthenticated = async (req, res, next) => {
     }
 
     const decode = await jwt.verify(token, process.env.TOKEN_SECRET);
-
-    req.user = decode.id;
+    console.log(decode);
+    req.user = decode.userId;
 
     next();
   } catch (error) {
@@ -27,4 +27,4 @@ const isAuthenticated = async (req, res, next) => {
   }
 };
 
-export default isAuthenticated
+export default isAuthenticated;

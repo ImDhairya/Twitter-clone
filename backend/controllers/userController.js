@@ -1,6 +1,7 @@
 import {User} from "../models/userSchema.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import {Tweet} from "../models/tweetSchema.js";
 export const Register = async (req, res) => {
   try {
     const {name, username, email, password} = req.body;
@@ -55,6 +56,7 @@ export const Login = async (req, res) => {
     }
 
     const user = await User.findOne({email});
+    console.log(user);
     if (!user) {
       return res.status(401).json({
         message: "User doesnot ",
@@ -62,7 +64,8 @@ export const Login = async (req, res) => {
       });
     }
 
-    const isMatch = await bcrypt.compare(user.password, password);
+    const isMatch = await bcrypt.compare(password, user.password);
+    console.log(isMatch);
     if (!isMatch) {
       return res.status(401).json({
         message: "Incorrect email or pass",
@@ -81,7 +84,9 @@ export const Login = async (req, res) => {
         messagee: `Welcome back ${user.name}`,
         success: true,
       });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const Logout = async (req, res) => {
@@ -89,4 +94,73 @@ export const Logout = async (req, res) => {
     message: "User logged out successfulluy",
     success: true,
   });
+};
+
+export const bookmark = async (req, res) => {
+  try {
+    const loggedInUserId = req.body.id;
+    const tweetId = req.params.id;
+
+    const user = await User.findById(loggedInUserId);
+
+    if (!user) {
+      console.log("Tweet not fount", tweetId);
+      return res.status(404).json({message: "User not found"});
+    }
+
+    const bookmarkedByUser = user.bookmarks.some(
+      (user) => user.id === loggedInUserId
+    );
+    if (bookmarkedByUser) {
+      //dislike
+      await User.findByIdAndUpdate(loggedInUserId, {
+        $pull: {bookmarks: {id: loggedInUserId}},
+      });
+      return res.status(200).json({
+        message: "user bookmark removed",
+        success: true,
+      });
+    } else {
+      await User.findByIdAndUpdate(loggedInUserId, {
+        $push: {bookmarks: {id: loggedInUserId}},
+      });
+      return res.status(200).json({
+        message: "user bookmark added",
+        success: true,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getMyProfile = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const user = await User.findById(id).select("-password");
+    return res.status(201).json({
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getOtherUsers = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const otherUsers = await User.find({_id: {$ne: id}}).select("-password");
+    if (!otherUsers) {
+      return res.status(401).json({
+        message: "Currently do not have any users",
+      });
+    }
+
+    return res.status(200).json({
+      otherUsers
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
