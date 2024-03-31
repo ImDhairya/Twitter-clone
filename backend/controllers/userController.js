@@ -59,7 +59,7 @@ export const Login = async (req, res) => {
     console.log(user);
     if (!user) {
       return res.status(401).json({
-        message: "User doesnot ",
+        message: "User doesnot exists ",
         success: false,
       });
     }
@@ -68,7 +68,7 @@ export const Login = async (req, res) => {
     console.log(isMatch);
     if (!isMatch) {
       return res.status(401).json({
-        message: "Incorrect email or pass",
+        message: "Incorrect email or password",
         success: false,
       });
     }
@@ -82,6 +82,7 @@ export const Login = async (req, res) => {
       .cookie("token", token, {expiresIn: "1d", httpOnly: true})
       .json({
         messagee: `Welcome back ${user.name}`,
+        user,
         success: true,
       });
   } catch (error) {
@@ -158,8 +159,141 @@ export const getOtherUsers = async (req, res) => {
     }
 
     return res.status(200).json({
-      otherUsers
+      otherUsers,
     });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+/* 
+export const follow = async (req, res) => {
+  try {
+    const loggedInUserId = req.params.id;
+    const userId = req.body.id;
+
+    const loggedInUser = await User.findById(loggedInUserId);
+
+    const user = await User.findById(userId);
+
+    if (!user || !loggedInUser) {
+      console.log("  all ids not fount");
+      return res.status(404).json({message: "User not found"});
+    }
+    // add the following to logged in user
+    const following = loggedInUser.following.some((user) => user.id === userId); // yes loggedinuser follows user
+
+    if (following) {
+      //code for unfollowing
+      await User.findByIdAndUpdate(loggedInUserId, {
+        $pull: {following: {id: userId}},
+      });
+
+      await User.findByIdAndUpdate(userId, {
+        $pull: {followers: {id: loggedInUserId}},
+      });
+      return res.status(200).json({
+        message: `user following removed`,
+        success: true,
+      });
+    } else {
+      // for following
+      await User.findByIdAndUpdate(loggedInUserId, {
+        $push: {following: {id: userId}},
+      });
+
+      await User.findByIdAndUpdate(userId, {
+        $push: {followers: {id: loggedInUserId}},
+      });
+
+      return res.status(200).json({
+        message: "user follower added",
+        success: true,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+*/
+
+export const follow = async (req, res) => {
+  try {
+    const loggedInUserId = req.params.id;
+    const userId = req.body.id;
+
+    const loggedInUser = await User.findById(loggedInUserId);
+
+    const user = await User.findById(userId);
+
+    if (!user || !loggedInUser) {
+      console.log("  all ids not fount");
+      return res.status(404).json({message: "User not found"});
+    }
+    // add the following to logged in user
+    const following = loggedInUser.following.some((user) => user.id === userId); // yes loggedinuser follows user
+
+    if (following) {
+      //code for unfollowing
+      return res.status(200).json({
+        message: `user already follows`,
+        success: true,
+      });
+    } else {
+      // for following
+      await User.findByIdAndUpdate(loggedInUserId, {
+        $push: {following: {id: userId}},
+      });
+
+      await User.findByIdAndUpdate(userId, {
+        $push: {followers: {id: loggedInUserId}},
+      });
+
+      return res.status(200).json({
+        message: "user follower added",
+        success: true,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const unfollow = async (req, res) => {
+  try {
+    const loggedInUserId = req.params.id;
+    const userId = req.body.id;
+
+    const loggedInUser = await User.findById(loggedInUserId);
+
+    const user = await User.findById(userId);
+
+    if (!user || !loggedInUser) {
+      console.log("  all ids not found");
+      return res.status(404).json({message: "User not found"});
+    }
+    // add the following to logged in user
+    const following = loggedInUser.following.some((user) => user.id === userId); // yes loggedinuser follows user
+
+    if (following) {
+      //code for unfollowing
+      await User.findByIdAndUpdate(loggedInUserId, {
+        $pull: {following: {id: userId}},
+      });
+
+      await User.findByIdAndUpdate(userId, {
+        $pull: {followers: {id: loggedInUserId}},
+      });
+      return res.status(200).json({
+        message: `user following removed`,
+        success: true,
+      });
+    } else {
+      return res.status(200).json({
+        message: "user not followed",
+        success: true,
+      });
+    }
   } catch (error) {
     console.log(error);
   }

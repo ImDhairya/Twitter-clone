@@ -1,15 +1,23 @@
-import React from 'react'
-import CreatePost from './CreatePost'
-import Tweet from './Tweet'
+import React from "react";
+import CreatePost from "./CreatePost";
+import Tweet from "./Tweet";
+import { store } from "../redux/store";
+import {useSelector} from "react-redux";
 function Feed() {
+  const {tweets} = useSelector((store) => store.tweet)
+  // const {tweets} = useSelector((store) => store.tweet);
+  console.log(tweets);
   return (
     <div className=" w-[60%] p-1 ">
       <div>
         <CreatePost />
-        <Tweet />
+        {/* {tweets.map((tweet) => {
+          return <Tweet key={tweet?._id} />;
+        })} */}
+        {/* <Tweet /> */}
       </div>
     </div>
   );
 }
 
-export default Feed
+export default Feed;

@@ -1,8 +1,15 @@
 import React from "react";
 import Avatar from "react-avatar";
 import {IoMdArrowBack} from "react-icons/io";
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
+import {useSelector} from "react-redux";
+import {store} from "../redux/store";
+import useGetProfile from "../hooks/useGetProfile";
 function Profile() {
+  const {user, profile} = useSelector((store) => store.user);
+  const {id} = useParams();
+  useGetProfile(id);
+
   return (
     <div className=" w-[50%] border-l border-r pr-1 border-gray-200">
       <div className="">
@@ -14,7 +21,7 @@ function Profile() {
             <IoMdArrowBack />
           </Link>
           <div className=" ml-3">
-            <h1 className=" font-bold ">Dhairya Pandya</h1>
+            <h1 className=" font-bold ">{profile?.name}</h1>
             <p className=" text-[15px] text-gray-500">10 post</p>
           </div>
         </div>
@@ -37,8 +44,8 @@ function Profile() {
             </button>
           </div>
           <div className=" m-4">
-            <h1 className=" font-bold text-xl">Dhairya</h1>
-            <p>@dhairyaPandya</p>
+            <h1 className=" font-bold text-xl">{profile?.name}</h1>
+            <p>{`@${profile?.username}`}</p>
           </div>
           <div className=" text-sm px-5">
             <p>

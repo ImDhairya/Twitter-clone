@@ -4,6 +4,7 @@ import Login from "./components/Login";
 import Home from "./components/Home";
 import Feed from "./components/Feed";
 import Profile from "./components/Profile";
+import {Toaster} from "react-hot-toast";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -21,7 +22,7 @@ function App() {
           />
 
           <Route
-            path="/profile"
+            path="/profile/:id"
             element={<Profile />}
           />
         </Route>
@@ -30,6 +31,7 @@ function App() {
           element={<Login />}
         />
       </Routes>
+      <Toaster />
     </>
   );
 }

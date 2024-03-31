@@ -9,7 +9,22 @@ import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
 const app = express();
-app.use(cors());
+// app.use(cors());
+
+const allowedOrigins = ["http://localhost:5173"];
+ 
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true, // Allow credentials (e.g., cookies, authorization headers)
+  })
+);
 
 app.use(cookieParser());
 app.use(express.json());
@@ -21,7 +36,7 @@ dotenv.config({
 
 import databaseConnection from "./config/database.js";
 import userRoute from "./routes/userRoutre.js";
-import tweetRoute from './routes/tweetRoute.js'
+import tweetRoute from "./routes/tweetRoute.js";
 databaseConnection();
 
 app.use(

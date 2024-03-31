@@ -5,9 +5,12 @@ import {IoIosNotificationsOutline} from "react-icons/io";
 import {CiUser} from "react-icons/ci";
 import {CiBookmark} from "react-icons/ci";
 import {AiOutlineLogout} from "react-icons/ai";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
+import {useSelector} from "react-redux";
+import {store} from "../redux/store";
 
 function LeftSidebar() {
+  const {user} = useSelector((store) => store.user);
   return (
     <div className=" w-[20%]">
       <div>
@@ -19,7 +22,10 @@ function LeftSidebar() {
           />
         </div>
         <div>
-          <Link to={'/'} className=" flex cursor-pointer py-2 items-center mt-3 hover:bg-gray-200 rounded-full w-[200px] px-2 ">
+          <Link
+            to={"/"}
+            className=" flex cursor-pointer py-2 items-center mt-3 hover:bg-gray-200 rounded-full w-[200px] px-2 "
+          >
             <CiHome size={30} /> <p className=" ml-2 font-bold text-sm">Home</p>
           </Link>
           <div className=" flex cursor-pointer py-2 items-center mt-3 hover:bg-gray-200 rounded-full w-[200px] px-2 ">
@@ -30,7 +36,10 @@ function LeftSidebar() {
             <IoIosNotificationsOutline size={30} />{" "}
             <p className=" ml-2 font-bold text-sm">Notifications</p>
           </div>
-          <Link to={'/profile'} className=" flex cursor-pointer py-2 items-center mt-3 hover:bg-gray-200 rounded-full w-[200px] px-2 ">
+          <Link
+            to={`/profile/${user?._id}`}
+            className=" flex cursor-pointer py-2 items-center mt-3 hover:bg-gray-200 rounded-full w-[200px] px-2 "
+          >
             <CiUser size={30} />{" "}
             <p className=" ml-2 font-bold text-sm">Profile</p>
           </Link>
@@ -38,7 +47,10 @@ function LeftSidebar() {
             <CiBookmark size={30} />{" "}
             <p className=" ml-2 font-bold text-sm">Bookmarks</p>
           </div>
-          <Link to={'/login'} className=" flex cursor-pointer py-2 items-center mt-3 hover:bg-gray-200 rounded-full w-[200px] px-2 ">
+          <Link
+            to={"/login"}
+            className=" flex cursor-pointer py-2 items-center mt-3 hover:bg-gray-200 rounded-full w-[200px] px-2 "
+          >
             <AiOutlineLogout size={30} />{" "}
             <p className=" ml-2 font-bold text-sm">Logout</p>
           </Link>
