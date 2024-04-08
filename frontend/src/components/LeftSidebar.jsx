@@ -6,11 +6,27 @@ import {CiUser} from "react-icons/ci";
 import {CiBookmark} from "react-icons/ci";
 import {AiOutlineLogout} from "react-icons/ai";
 import {Link} from "react-router-dom";
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
+import toast from "react-hot-toast";
 import {store} from "../redux/store";
+import axios from "axios";
+import {USER_API_END_POINT} from "../utils/constant";
+import {getMyProfile, getOtherUser, getUser} from "../redux/userSlice";
 
 function LeftSidebar() {
   const {user} = useSelector((store) => store.user);
+  const dispatch = useDispatch();
+  const logoutHandler = async () => {
+    try {
+      const res = await axios.get(`${USER_API_END_POINT}/logout`);
+      dispatch(getUser(null));
+      dispatch(getOtherUser(null));
+      dispatch(getMyProfile(null));
+      toast.success(res.data.message);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className=" w-[20%]">
       <div>
@@ -49,6 +65,7 @@ function LeftSidebar() {
           </div>
           <Link
             to={"/login"}
+            onClick={logoutHandler}
             className=" flex cursor-pointer py-2 items-center mt-3 hover:bg-gray-200 rounded-full w-[200px] px-2 "
           >
             <AiOutlineLogout size={30} />{" "}
