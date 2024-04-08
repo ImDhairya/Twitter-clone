@@ -219,10 +219,10 @@ export const follow = async (req, res) => {
 
 export const follow = async (req, res) => {
   try {
-    const loggedInUserId = req.params.id;
-    const userId = req.body.id;
+    const loggedInUserId = req.body.id; // swapped it to req.body.id
+    const userId = req.params.id;
 
-    console.log(userId);
+    console.log(loggedInUserId);
 
     const loggedInUser = await User.findById(loggedInUserId);
     const user = await User.findById(userId);
@@ -230,7 +230,7 @@ export const follow = async (req, res) => {
     // Usr not found
 
     if (!user || !loggedInUser) {
-      console.log("  all ids not fount");
+      console.log("  all ids not fount when following");
       return res.status(404).json({message: "User not found"});
     }
     // add the following to logged in user
@@ -264,9 +264,10 @@ export const follow = async (req, res) => {
 
 export const unfollow = async (req, res) => {
   try {
-    const loggedInUserId = req.params.id;
-    const userId = req.body.id;
+    const loggedInUserId = req.body.id;
+    const userId = req.params.id;
     console.log(userId);
+    console.log(loggedInUserId);
 
     const loggedInUser = await User.findById(loggedInUserId);
 

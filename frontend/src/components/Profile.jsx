@@ -24,7 +24,7 @@ function Profile() {
       try {
         axios.defaults.withCredentials = true;
         const res = await axios.post(`${USER_API_END_POINT}unfollowing/${id}`, {
-          id: user.user?._id,
+          id: user?._id,
         });
         console.log(res);
 
@@ -43,7 +43,7 @@ function Profile() {
         // axios.post(`${USER_API_END_POINT}login`)
 
         const res = await axios.post(`${USER_API_END_POINT}following/${id}`, {
-          id: user.user?._id,
+          id: user?._id,
         });
         console.log(res);
         dispatch(followingUpdate(id));
